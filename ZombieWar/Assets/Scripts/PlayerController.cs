@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ZombieWar;
 
-public class PlayerController : Singleton<PlayerController>
+public class PlayerController : Singleton<PlayerController>, IMove
 {
     private Rigidbody2D _rigidbody;
     private Animator _animator;
@@ -39,10 +39,10 @@ public class PlayerController : Singleton<PlayerController>
     }
     private void FixedUpdate()
     {
-        MovementPlayer();
+        MovementCharacter();
         _rigidbody.velocity = new Vector2(_speed, _rigidbody.velocity.y);
     }
-    private void MovementPlayer()
+    public void MovementCharacter()
     {
         if(_joystick.Horizontal != 0)
         {
