@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using ZombieWar;
 
-public class Enemy : Singleton<Enemy>, IMove
+public class Enemy : Singleton<Enemy>
 {
-    private Rigidbody2D _rigidbody;
     private Animator _animator;
 
     private float _speed = .7f;
@@ -13,24 +12,29 @@ public class Enemy : Singleton<Enemy>, IMove
 
     private void Start()
     {
-        _rigidbody = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
     }
     private void Update()
     {
         MovementCharacter();
+        Flip();
     }
-    public void MovementCharacter()
+    private void MovementCharacter()
     {
-        transform.position = Vector2.MoveTowards(transform.position, Portal.Instance.transform.position, _speed * Time.deltaTime);
+        if (_health > 0)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, Portal.Instance.transform.position, _speed * Time.deltaTime);
+            _animator.SetInteger("State", 2);
+        }
     }
     private void TakeDamage()
     {
-        _health = _health - 7f;
+        _health -= 7f;
         print(_health);
         if (_health <= 0 )
         {
-            Destroy(gameObject);
+            _animator.SetInteger("State", 3);
+            StartCoroutine(DeathEnemy());
         }
     }
     private void OnTriggerEnter2D(Collider2D collision)
@@ -43,5 +47,21 @@ public class Enemy : Singleton<Enemy>, IMove
         {
             Destroy(gameObject);
         }
+    }
+    private void Flip()
+    {
+        if (transform.position.x < 0)
+        {
+            transform.localRotation = Quaternion.Euler(0, 0, 0);
+        }
+        if (transform.position.x > 0)
+        {
+            transform.localRotation = Quaternion.Euler(0, 180, 0);
+        }
+    }
+    private IEnumerator DeathEnemy()
+    {
+        yield return new WaitForSeconds(1f);
+        Destroy(gameObject);
     }
 }
