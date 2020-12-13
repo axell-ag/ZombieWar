@@ -12,7 +12,7 @@ public class Spawn : MonoBehaviour
     private float _spawnPosition;
     private void Start()
     {
-        _spawnTime = Random.Range(1f, 5f);
+        _spawnTime = Random.Range(1f, 4f);
         _spawnPosition = Random.Range(0f, .2f);
         if (_spawnPosition < .1f)
         {
